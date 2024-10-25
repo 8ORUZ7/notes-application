@@ -12,6 +12,7 @@ This is a simple notes application that allows users to create, edit, and delete
 - **Edit Notes**: Modify existing notes.
 - **Delete Notes**: Remove notes that are no longer needed.
 - **Responsive Design**: Works well on both desktop and mobile devices.
+- **Docker&Kubernetes**: You can deploy your app on a minikube cluster to practice deployment
 
 ## Installation
 
@@ -36,3 +37,14 @@ Since this is a static website, you can simply open the index.html file in your 
 ```
 open index.html
 ```
+
+### 4. Optional deployment
+
+You can apply a kubectl deployment and services and test in localhost:80 
+
+``
+cd /KubernetesDeployment
+kubectl apply -f deployment.yaml
+kubectl apply -f services.yaml
+minikube services my-nginx-service
+``
