@@ -4,7 +4,7 @@ This is a simple notes application that allows users to create, edit, and delete
 
 > This application also provides theme toggling
 
-#### Link: https://osiristape.github.io/notes-application/
+#### Link: https://8ORUZ7.github.io/notes-application/
 
 ## Features
 
@@ -21,7 +21,7 @@ This is a simple notes application that allows users to create, edit, and delete
 First, clone the repository to your local machine using Git:
 
 ```
-git clone https://github.com/osirisTape/notes-application.git
+git clone https://github.com/8ORUZ7/notes-application.git
 ```
 
 ### 2. Navigate to the Project Directory
