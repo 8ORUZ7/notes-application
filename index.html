@@ -5,16 +5,191 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image" href="https://raw.githubusercontent.com/8ORUZ7/8ORUZ7.github.io/refs/heads/main/site_logo.png">
     <title>Notes</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            margin: 0;
+            background-color: #000000;
+            font-family: cursive;
+        }
+        
+        .heading{
+            color: #ffffff;
+            text-align: center;
+            padding-top: 10px;
+            font-size: 35px;
+        }
+        
+        .info-text{
+            text-align: center;
+            color: #ffffff;
+            font-size: 18px;
+        }
+        
+        .app{
+            display: grid;
+            grid-template-columns: repeat(auto-fill,300px);
+            gap: 40px;
+            justify-content: center;
+            padding: 50px;
+        }
+        
+        .note{
+            padding: 17px;
+            border-radius: 5px;
+            resize: none;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            font-size: 18px;
+            height: 300px;
+            color: #000000;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.7);
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        .note::placeholder{
+            color: rgb(75, 74, 74);
+            opacity: 0.5;
+        }
+        
+        .note:hover,
+        .note:focus{
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            background:  rgba(255,255,255,0.9);
+        }
+        
+        .btn{
+            height: 300px;
+            border: none;
+            border-radius: 5px;
+            font-size: 70px;
+            font-weight: 700;
+            color: #000000;
+            cursor: pointer;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover{
+            transform: scale(1.1);
+            background-color: #818181;
+            color: #ffffff;
+        }
+        /* added theme class for theme btn */
+        .theme {
+          cursor: pointer;
+          color: white;
+          position: fixed;
+          top: 1rem;
+          right: 1rem;
+        }
+    </style>
 </head>
 <body>
-    <!-- added theme btn -->
     <img class="theme" height="30px" />
     <h1 class="heading">notes.</h1>
     <p class="info-text">double click on a note to remove it.</p>
     <div class="app" id="App">
         <button class="btn" id="btn">+</button>
     </div>
-    <script src="script.js"></script>
+    <script>
+        const btnEl = document.getElementById("btn");
+        const appEl = document.getElementById("App");
+        const themeBtn = document.querySelector(".theme");
+        if (!localStorage.getItem("theme")) {
+            localStorage.setItem("theme", "dark");
+        }
+        if (localStorage.getItem("theme") === "dark") {
+          console.log(localStorage.getItem("theme"));
+            setIcon("dark");
+                   document.body.style.backgroundColor = "black";
+                   document.body.style.filter = "invert(0)";
+        } else {
+            setIcon("light");
+            document.body.style.backgroundColor = "white";
+            document.body.style.filter = "invert(1)";
+        }
+        themeBtn.addEventListener("click", (e) =>{
+            if (localStorage.getItem("theme") === "light") {
+                setIcon("dark");
+                localStorage.setItem("theme", "dark");
+                document.body.style.backgroundColor = "black";
+                document.body.style.filter = "invert(0)";
+            } else if (localStorage.getItem("theme") === "dark") {
+                setIcon("light");
+                localStorage.setItem("theme", "light");
+                document.body.style.backgroundColor = "white";
+                document.body.style.filter = "invert(1)";
+            }
+        })
+        function setIcon(theme) {
+            themeBtn.src = `icons/${theme}.svg`;
+        }
+        // contribution ended
+        getNotes().forEach((note)=>{
+            const noteEl = createNoteEl(note.id,note.content);
+            appEl.insertBefore(noteEl,btnEl);
+        });
+        function createNoteEl(id,content){
+            const element = document.createElement("textarea");
+            element.classList.add("note");
+            element.placeholder = "Empty Note";
+            element.value = content;
+        
+            element.addEventListener("dblclick",()=>{
+                    const warning = confirm("Do you want to delete this note?");
+                    if(warning){
+                        deleteNote(id,element)
+                    }
+            });
+            element.addEventListener("input",()=>{
+                updateNote(id,element.value);
+            });
+            return element;
+        
+        }
+        
+        function deleteNote(id,element){
+            notes = getNotes().filter((note)=> note.id!=id);
+            saveNote(notes);
+            appEl.removeChild(element);
+        
+        }
+        
+        function updateNote(id,content){
+           const notes = getNotes();
+           const target = notes.filter((note)=> note.id==id)[0]; 
+           target.content = content; 
+           saveNote(notes);
+        }
+            
+        function addNote(){
+            const notes = getNotes();
+            const noteObj = {
+                    id: Math.floor(Math.random() * 10000),
+                    content: ""           
+            };
+        
+            const noteEl = createNoteEl(noteObj.id,noteObj.content);
+            appEl.insertBefore(noteEl,btnEl);
+            notes.push(noteObj);
+            saveNote(notes)
+        }
+        
+        function saveNote(notes){
+            localStorage.setItem("note-app",JSON.stringify(notes));
+        }
+        
+        function getNotes(){
+            return JSON.parse(localStorage.getItem("note-app") || "[]");
+        }
+        
+        btnEl.addEventListener("click", addNote);
+    </script>
 </body>
 </html>
